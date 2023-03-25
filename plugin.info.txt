@@ -1,0 +1,7 @@
+base   imapmarkers
+author Kai Thöne
+email  k.git.thoene@gmx.net
+date   2023-03-25
+name   imapmarkers plugin
+desc   Image Maps With Markers
+url    https://github.com/kgitthoene/imapmarkers
