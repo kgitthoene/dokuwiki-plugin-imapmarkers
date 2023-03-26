@@ -116,6 +116,7 @@ class syntax_plugin_imapmarkers_syntax extends \dokuwiki\Extension\SyntaxPlugin
     if ($mode !== 'xhtml') {
       global $conf;
       global $ID;
+      logPageAccess(cleanID($ID));
       static $has_content = false;
       $state = $data[0];
       switch ($state) {
@@ -126,7 +127,6 @@ class syntax_plugin_imapmarkers_syntax extends \dokuwiki\Extension\SyntaxPlugin
       }
       return false;
     }
-
     return true;
   }
 }
