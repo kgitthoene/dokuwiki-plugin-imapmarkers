@@ -11,4 +11,4 @@ will not work!
 Please refer to http://www.dokuwiki.org/extensions for additional info
 on how to install extensions in DokuWiki.
 
-License: https://github.com/kgitthoene/dokuwiki-plugin-imapmarkers/blob/main/LICENSE
+License: https://github.com/kgitthoene/dokuwiki-plugin-imapmarkers/blob/master/LICENSE
