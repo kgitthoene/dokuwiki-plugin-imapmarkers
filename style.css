@@ -1,0 +1,12 @@
+@media aural,
+braille,
+tty {
+  .dokuwiki div.imapmarkers-container {
+    display: block;
+    position: relative;
+  }
+
+  .dokuwiki img.imapmarkers-imgage {
+    display: none;
+  }
+}
