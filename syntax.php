@@ -13,11 +13,18 @@ if (!defined('DOKU_INC'))
 use dokuwiki\Extension\SyntaxPlugin;
 use dokuwiki\Logger;
 
-dbglog("syntax_plugin_imapmarkers::START");
+include(dirname(__FILE__) . "/imapmarkers_simple_html_dom.php");
 
 
 class syntax_plugin_imapmarkers_substitution extends DokuWiki_Syntax_Plugin
 {
+  private bool $is_debug;
+
+  function __construct()
+  {
+    $this->is_debug = false;
+  }
+
   public function getType()
   {
     return 'substition';
@@ -53,7 +60,9 @@ class syntax_plugin_imapmarkers_substitution extends DokuWiki_Syntax_Plugin
           $err_msg = sprintf("Malformed location! LOCATION='%s'", $match);
           $args = array($state, MATCH_IS_UNKNOWN, $is_correct, $err_msg);
         }
-        dbglog(sprintf("syntax_plugin_imapmarkers_substitution.handle::DOKU_LEXER_SPECIAL: [%d] MATCH='%s'", $this->nr_imagemap_handler, $match));
+        if ($this->is_debug) {
+          dbglog(sprintf("syntax_plugin_imapmarkers_substitution.handle::DOKU_LEXER_SPECIAL: [%d] MATCH='%s'", $this->nr_imagemap_handler, $match));
+        }
         break;
     }
     return $args;
@@ -65,11 +74,13 @@ class syntax_plugin_imapmarkers_substitution extends DokuWiki_Syntax_Plugin
       global $conf;
       global $ID;
       $state = $data[0];
-      //dbglog("syntax_plugin_imapmarkers.render: ID='" . cleanID($ID) . "' STATE=" . $state);
+      //if ($this->is_debug) { dbglog("syntax_plugin_imapmarkers.render: ID='" . cleanID($ID) . "' STATE=" . $state); }
       static $has_content = false;
       switch ($state) {
         case DOKU_LEXER_SPECIAL:
-          dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_SPECIAL: [%d] DATA='%s'", $this->nr_imagemap_render, implode($data, ", ")));
+          if ($this->is_debug) {
+            dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_SPECIAL: [%d] DATA='%s'", $this->nr_imagemap_render, implode($data, ", ")));
+          }
           $match_type = MATCH_IS_UNKNOWN;
           $is_correct = false;
           $err_msg = "";
@@ -86,12 +97,12 @@ class syntax_plugin_imapmarkers_substitution extends DokuWiki_Syntax_Plugin
           if (!$is_correct) {
             $renderer->doc .= sprintf('  <br /><span style="color:white; background-color:red;">ERROR -- %s</span>%s', $err_msg, DOKU_LF);
           }
-          //dbglog(sprintf("DOC='%s'", $renderer->doc));
+          //if ($this->is_debug) { dbglog(sprintf("DOC='%s'", $renderer->doc)); }
           break;
       }
       return true;
     }
-    //dbglog(sprintf("syntax_plugin_imapmarkers.render| MODE='%s' ID='%s'", $mode, cleanID($ID)));
+    //if ($this->is_debug) { dbglog(sprintf("syntax_plugin_imapmarkers.render| MODE='%s' ID='%s'", $mode, cleanID($ID))); }
     return true;
   } // public function render
 } // class syntax_plugin_imapmarkers_substitution
@@ -108,11 +119,15 @@ class syntax_plugin_imapmarkers extends DokuWiki_Syntax_Plugin
   public int $nr_imagemap_render;
   private array $a_areas;
   private array $a_cfg;
+  private bool $is_debug;
 
   function __construct()
   {
+    $this->is_debug = false;
     global $ID;
-    dbglog("syntax_plugin_imapmarkers.__construct ID='" . cleanID($ID) . "'");
+    if ($this->is_debug) {
+      dbglog("syntax_plugin_imapmarkers.__construct ID='" . cleanID($ID) . "'");
+    }
     $this->nr_imagemap_handler = -1;
     $this->nr_imagemap_render = -1;
     $this->a_areas = array();
@@ -147,7 +162,9 @@ class syntax_plugin_imapmarkers extends DokuWiki_Syntax_Plugin
   {
     if ($mode == "base") {
       global $ID;
-      dbglog(sprintf("syntax_plugin_imapmarkers.connectTo: ID='%s' MODE='%s'", cleanID($ID), $mode));
+      if ($this->is_debug) {
+        dbglog(sprintf("syntax_plugin_imapmarkers.connectTo: ID='%s' MODE='%s'", cleanID($ID), $mode));
+      }
       //$this->Lexer->addSpecialPattern('<FIXME>', $mode, 'plugin_imapmarkers');
       $this->Lexer->addEntryPattern('\{{2}(?i)IMAPMARKERS>[^\}]+\}{2}', $mode, 'plugin_imapmarkers');
       $this->Lexer->addPattern('\s*\{{2}(?i)CFG>\}\}.*?\{\{<CFG\s*\}{2}\s*', 'plugin_imapmarkers');
@@ -160,7 +177,9 @@ class syntax_plugin_imapmarkers extends DokuWiki_Syntax_Plugin
   public function postConnect()
   {
     global $ID;
-    dbglog("syntax_plugin_imapmarkers.postConnect: ID='" . cleanID($ID) . "'");
+    if ($this->is_debug) {
+      dbglog("syntax_plugin_imapmarkers.postConnect: ID='" . cleanID($ID) . "'");
+    }
     $this->Lexer->addExitPattern('\{\{<(?i)IMAPMARKERS\}\}', 'plugin_imapmarkers');
   }
 
@@ -170,14 +189,18 @@ class syntax_plugin_imapmarkers extends DokuWiki_Syntax_Plugin
     global $conf;
     global $ID;
     $args = array($state);
-    //dbglog("syntax_plugin_imapmarkers.handle: ID='".cleanID($ID)."' STATE=".$state);
+    //if ($this->is_debug) { dbglog("syntax_plugin_imapmarkers.handle: ID='".cleanID($ID)."' STATE=".$state); }
 
     switch ($state) {
       case DOKU_LEXER_ENTER:
         $this->nr_imagemap_handler++;
-        dbglog(sprintf("syntax_plugin_imapmarkers.handle::DOKU_LEXER_ENTER: [%d] MATCH='%s' HANDLER='%s'", $this->nr_imagemap_handler, $match, substr($match, 14, -2)));
+        if ($this->is_debug) {
+          dbglog(sprintf("syntax_plugin_imapmarkers.handle::DOKU_LEXER_ENTER: [%d] MATCH='%s' HANDLER='%s'", $this->nr_imagemap_handler, $match, substr($match, 14, -2)));
+        }
         $img = Doku_Handler_Parse_Media(substr($match, 14, -2));
-        dbglog(sprintf("syntax_plugin_imapmarkers.handle::DOKU_LEXER_ENTER: [%d] IMG='%s'", $this->nr_imagemap_handler, $img));
+        if ($this->is_debug) {
+          dbglog(sprintf("syntax_plugin_imapmarkers.handle::DOKU_LEXER_ENTER: [%d] IMG='%s'", $this->nr_imagemap_handler, $img));
+        }
         if ($img['title']) {
           $mapname = str_replace(':', '', cleanID($img['title']));
           $mapname = ltrim($mapname, '0123456789._-');
@@ -204,17 +227,23 @@ class syntax_plugin_imapmarkers extends DokuWiki_Syntax_Plugin
           $img['align'], $img['width'], $img['height'],
           $img['cache']
         );
-        dbglog("syntax_plugin_imapmarkers.handle::DOKU_LEXER_ENTER: ARGS=[ " . implode(", ", $args) . " ]");
+        if ($this->is_debug) {
+          dbglog("syntax_plugin_imapmarkers.handle::DOKU_LEXER_ENTER: ARGS=[ " . implode(", ", $args) . " ]");
+        }
         break;
       case DOKU_LEXER_EXIT:
-        dbglog("syntax_plugin_imapmarkers.handle::DOKU_LEXER_EXIT: MATCH='" . trim($match) . "'");
+        if ($this->is_debug) {
+          dbglog("syntax_plugin_imapmarkers.handle::DOKU_LEXER_EXIT: MATCH='" . trim($match) . "'");
+        }
         break;
       case DOKU_LEXER_MATCHED:
         $is_correct = false;
         $err_msg = "";
         $matches = array();
         $match = trim($match);
-        dbglog(sprintf("syntax_plugin_imapmarkers.handle::DOKU_LEXER_MATCHED: [%d] MATCH='%s' POS=%s", $this->nr_imagemap_handler, $match, $pos));
+        if ($this->is_debug) {
+          dbglog(sprintf("syntax_plugin_imapmarkers.handle::DOKU_LEXER_MATCHED: [%d] MATCH='%s' POS=%s", $this->nr_imagemap_handler, $match, $pos));
+        }
         //----------
         // check for area:
         if (preg_match("/\[{2}\s*(.*?)\s*\|\s*(.*?)\s*\|\s*(.*?)\s*@\s*([\d,\s]+)\s*\]{2}/", $match, $matches)) {
@@ -240,7 +269,22 @@ class syntax_plugin_imapmarkers extends DokuWiki_Syntax_Plugin
                 }
                 $err_msg = sprintf("Invalid number of coordinates! COUNT=%d", count($a_coords));
             }
-            $args = array($state, MATCH_IS_AREA, $is_correct, $err_msg, $link, $loc_id, $text, $a_coords);
+            //
+            $uri = $link;
+            $classes = "";
+            if ($link != "") {
+              $dokuwiki_link = sprintf("[[%s|%s]]", $link, $text);
+              $rendered_result = $this->render_text($dokuwiki_link);
+              $dom = imapmarkers_str_get_html($rendered_result);
+              $a = $dom->find('a', 0);
+              $uri = $a->href;
+              $classes = $a->class;
+            }
+            if ($this->is_debug) {
+              dbglog(sprintf("syntax_plugin_imapmarkers.handle::DOKU_LEXER_MATCHED: URL='%s' CLASS='%s'", $uri, $classes));
+            }
+            //
+            $args = array($state, MATCH_IS_AREA, $is_correct, $err_msg, $link, $loc_id, $text, $a_coords, $uri, $classes);
             break;
           } else {
             $err_msg = sprintf("Invalid area! AREA='%s'", $match);
@@ -265,28 +309,11 @@ class syntax_plugin_imapmarkers extends DokuWiki_Syntax_Plugin
         }
         $args = array($state, MATCH_IS_UNKNOWN, $is_correct, $err_msg);
         break;
-      /*
-      case DOKU_LEXER_SPECIAL:
-      // check for marker location:
-      $is_correct = false;
-      $err_msg = "";
-      $matches = array();
-      $match = trim($match);
-      if (preg_match("/\{{2}(?i)IMAPMLOC>\s*(.+?)\s*\|\s*(.+?)\s*\}{2}/", $match, $matches)) {
-      $loc_id = $matches[1];
-      $loc_title = $matches[2];
-      $is_correct = true;
-      $args = array($state, MATCH_IS_LOCATION, $is_correct, $err_msg, $loc_id, $loc_title);
-      } else {
-      $err_msg = sprintf("Malformed location! LOCATION='%s'", $match);
-      $args = array($state, MATCH_IS_UNKNOWN, $is_correct, $err_msg);
-      }
-      dbglog(sprintf("syntax_plugin_imapmarkers.handle::DOKU_LEXER_SPECIAL: [%d] MATCH='%s'", $this->nr_imagemap_handler, $match));
-      break;
-      */
       case DOKU_LEXER_UNMATCHED:
         $args[] = $match;
-        dbglog("syntax_plugin_imapmarkers.handle::DOKU_LEXER_UNMATCHED: DATA='" . trim($match) . "'");
+        if ($this->is_debug) {
+          dbglog("syntax_plugin_imapmarkers.handle::DOKU_LEXER_UNMATCHED: DATA='" . trim($match) . "'");
+        }
         break;
     }
     return $args;
@@ -299,19 +326,21 @@ class syntax_plugin_imapmarkers extends DokuWiki_Syntax_Plugin
       global $conf;
       global $ID;
       $state = $data[0];
-      //dbglog("syntax_plugin_imapmarkers.render: ID='" . cleanID($ID) . "' STATE=" . $state);
+      //if ($this->is_debug) { dbglog("syntax_plugin_imapmarkers.render: ID='" . cleanID($ID) . "' STATE=" . $state); }
       static $has_content = false;
       switch ($state) {
         case DOKU_LEXER_ENTER:
           $this->nr_imagemap_render++;
-          dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_ENTER: [%d] DATA='%s'", $this->nr_imagemap_render, implode($data, ", ")));
+          if ($this->is_debug) {
+            dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_ENTER: [%d] DATA='%s'", $this->nr_imagemap_render, implode($data, ", ")));
+          }
           list($state, $type, $src, $title, $name, $align, $width, $height, $cache) = $data;
           if ($type == 'internalmedia') {
             $exists = null;
             resolve_mediaid(getNS($ID), $src, $exists);
           }
           $renderer->doc .= sprintf('<p id="imapmarkers-container-%d" class="imapmarkers imapmarkers-container">%s', $this->nr_imagemap_render, DOKU_LF);
-          //dbglog(sprintf("DOC='%s'", $renderer->doc));
+          //if ($this->is_debug) { dbglog(sprintf("DOC='%s'", $renderer->doc)); }
           $src = ml($src, array('w' => $width, 'h' => $height, 'cache' => $cache));
           $renderer->doc .= sprintf('  <img src="%s" id="imapmarkers-img-%d" class="imapmarkers imapmarkers-image media%s imap" usemap="#imapmarkers-map-%d"', $src, $this->nr_imagemap_render, $align, $this->nr_imagemap_render);
           if ($align == 'right' || $align == 'left')
@@ -348,13 +377,17 @@ class syntax_plugin_imapmarkers extends DokuWiki_Syntax_Plugin
               array_push($this->a_cfg[$this->nr_imagemap_render], $data);
               break;
           }
-          dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_MATCHED: [%d] DATA='%s'", $this->nr_imagemap_render, implode($data, ", ")));
+          if ($this->is_debug) {
+            dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_MATCHED: [%d] DATA='%s'", $this->nr_imagemap_render, implode($data, ", ")));
+          }
           if (!$is_correct) {
             $renderer->doc .= sprintf('  <br /><span style="color:white; background-color:red;">ERROR -- %s</span>%s', $err_msg, DOKU_LF);
           }
           break;
         case DOKU_LEXER_UNMATCHED:
-          dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_UNMATCHED: [%d] DATA='%s'", $this->nr_imagemap_render, implode($data, ", ")));
+          if ($this->is_debug) {
+            dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_UNMATCHED: [%d] DATA='%s'", $this->nr_imagemap_render, implode($data, ", ")));
+          }
           break;
         case DOKU_LEXER_EXIT:
           $is_all_ok = true;
@@ -366,7 +399,9 @@ class syntax_plugin_imapmarkers extends DokuWiki_Syntax_Plugin
           if (array_key_exists($this->nr_imagemap_render, $this->a_cfg)) {
             $nr_cfgs = 1;
           }
-          dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_EXIT: [%d] DATA='%s' #AREAS=%d #CFGS=%d", $this->nr_imagemap_render, implode($data, ", "), $nr_areas, $nr_cfgs));
+          if ($this->is_debug) {
+            dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_EXIT: [%d] DATA='%s' #AREAS=%d #CFGS=%d", $this->nr_imagemap_render, implode($data, ", "), $nr_areas, $nr_cfgs));
+          }
           if ($nr_areas > 0) {
             foreach ($this->a_areas[$this->nr_imagemap_render] as $value) {
               list($state, $match_type, $is_correct, $err_msg) = $value;
@@ -378,7 +413,7 @@ class syntax_plugin_imapmarkers extends DokuWiki_Syntax_Plugin
             if ($is_all_ok) {
               $renderer->doc .= sprintf('  <map name="imapmarkers-map-%d" class="imapmarkers imapmarkers-map">%s', $this->nr_imagemap_render, DOKU_LF);
               foreach ($this->a_areas[$this->nr_imagemap_render] as $key => $value) {
-                list($state, $match_type, $is_correct, $err_msg, $link, $loc_id, $text, $a_coords) = $value;
+                list($state, $match_type, $is_correct, $err_msg, $link, $loc_id, $text, $a_coords, $uri, $classes) = $value;
                 $link = ($link == "") ? "#" : $link;
                 $shape = "";
                 switch (count($a_coords)) {
@@ -391,15 +426,15 @@ class syntax_plugin_imapmarkers extends DokuWiki_Syntax_Plugin
                   default:
                     $shape = "poly";
                 }
-                //dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_EXIT: [%d] COORDS='%s'", $this->nr_imagemap_render, implode($a_coords, ",")));
-                $renderer->doc .= sprintf('    <area id="imapmarkers-area-%d-%d" location_id="%s" class="imapmarkers" shape="%s" coords="%s" alt="%s" title="%s" href="%s" />%s', $this->nr_imagemap_render, $key, $loc_id, $shape, implode($a_coords, ","), $text, $text, $link, DOKU_LF);
+                //if ($this->is_debug) { dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_EXIT: [%d] COORDS='%s'", $this->nr_imagemap_render, implode($a_coords, ","))); }
+                $renderer->doc .= sprintf('    <area id="imapmarkers-area-%d-%d" location_id="%s" class="imapmarkers" shape="%s" coords="%s" alt="%s" title="%s" href="%s" />%s', $this->nr_imagemap_render, $key, $loc_id, $shape, implode($a_coords, ","), $text, $text, $uri, DOKU_LF);
               }
               $renderer->doc .= sprintf('    <div style="display:none;" class="imapcontent">%s', DOKU_LF);
               $renderer->doc .= sprintf('      <p>%s', DOKU_LF);
               foreach ($this->a_areas[$this->nr_imagemap_render] as $key => $value) {
                 list($state, $match_type, $is_correct, $err_msg, $link, $loc_id, $text, $a_coords) = $value;
                 $link = ($link == "") ? "#" : $link;
-                $renderer->doc .= sprintf('      <a id="imapmarkers-link-%d-%d" title="%s" href="%s" rel="ugc nofollow">%s</a>%s', $this->nr_imagemap_render, $key, $link, $link, $text, DOKU_LF);
+                $renderer->doc .= sprintf('      <a id="imapmarkers-link-%d-%d" title="%s" href="%s" class="%s" rel="ugc nofollow">%s</a>%s', $this->nr_imagemap_render, $key, $link, $uri, $classes, $text, DOKU_LF);
               }
               $renderer->doc .= sprintf('      </p>%s', DOKU_LF);
               $renderer->doc .= sprintf('    </div>%s', DOKU_LF);
@@ -417,7 +452,7 @@ class syntax_plugin_imapmarkers extends DokuWiki_Syntax_Plugin
             if ($is_all_ok) {
               foreach ($this->a_cfg[$this->nr_imagemap_render] as $key => $value) {
                 list($state, $match_type, $is_correct, $err_msg, $cfg) = $value;
-                //dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_EXIT: [%d] CONFIG='%s'", $cfg));
+                //if ($this->is_debug) { dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_EXIT: [%d] CONFIG='%s'", $cfg)); }
                 $renderer->doc .= sprintf('  <div id="imapmarkers-config-%d" class="imapmarkers imapmarkers-config" style="display: none;">%s</div>%s', $this->nr_imagemap_render, $cfg, DOKU_LF);
               }
             }
@@ -426,7 +461,7 @@ class syntax_plugin_imapmarkers extends DokuWiki_Syntax_Plugin
       }
       return true;
     }
-    //dbglog(sprintf("syntax_plugin_imapmarkers.render| MODE='%s' ID='%s'", $mode, cleanID($ID)));
+    //if ($this->is_debug) { dbglog(sprintf("syntax_plugin_imapmarkers.render| MODE='%s' ID='%s'", $mode, cleanID($ID))); }
     return true;
   } // public function render
 } // class syntax_plugin_imapmarkers

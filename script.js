@@ -1,5 +1,8 @@
-/* DOKUWIKI:include_once jquery.imagemapster.js */
-// Load jQuery Imagemapster Library. SEE: http://www.outsharked.com/imagemapster/
+if (typeof (variable) === 'undefined') {
+  // Load jQuery Imagemapster Library. SEE: http://www.outsharked.com/imagemapster/
+  /* DOKUWIKI:include_once jquery.imagemapster.js */
+}
+
 
 globalThis[Symbol.for('imapmarkers_storage')] = (function () {
   var defaults = {
@@ -186,12 +189,12 @@ addEventListener("DOMContentLoaded", (event) => {
     });
 
     let imap_do_main_function = function () {
-      if (_g.defaults['debug']) { console.log("START IMAGEMAPPING MARKER"); }
+      if (_g.defaults['debug']) { console.log("imapmarkers::START IMAGEMAPPING MARKER"); }
       _g.nr_startup_intervals++;
       if (_g.nr_startup_intervals >= 5) {
         // stop after 5 s searching:
         if (_g.imap_div_timeout !== null) { clearTimeout(_g.imap_div_timeout); }
-        if (_g.defaults['debug']) { console.log("GIVE UP IMAGEMAPPING SEARCH"); }
+        if (_g.defaults['debug']) { console.log("imapmarkers::GIVE UP IMAGEMAPPING SEARCH"); }
         return;
       }
       // find container:
@@ -343,7 +346,7 @@ addEventListener("DOMContentLoaded", (event) => {
                 _g.a_references[imap_index].push({ 'id': loc_id, 'imap_index': imap_index, 'area_index': area_index, 'reference': $(this), 'css': $(this).cssSpecific(_g.a_clicked_css_properties[imap_index]) });
                 let reference_index = _g.a_references[imap_index].length - 1;
                 if (_g.defaults['debug']) { console.log("FOUND AREA FOR IMAPMLOC ID='" + loc_id + "' AREA IMAP-INDEX=" + imap_index + " AREA-INDEX=" + area_index + " CSS='" + JSON.stringify($(this).cssSpecific(_g.a_clicked_css_properties[imap_index])) + "'"); }
-                $(this).bind("click", { 'area': found_area, 'id': loc_id, 'imap_index': imap_index, 'area_index': area_index, 'reference_index': reference_index }, function (e) {
+                $(this).on("click", { 'area': found_area, 'id': loc_id, 'imap_index': imap_index, 'area_index': area_index, 'reference_index': reference_index }, function (e) {
                   var data = e.data;
                   let imap_index = data['imap_index'];
                   let marker_id_jquery = "#imapmarkers-marker-" + imap_index;
@@ -370,7 +373,7 @@ addEventListener("DOMContentLoaded", (event) => {
                     let href = _g.a_areas[imap_index][area_index]['area'].attr('href');
                     if (String(href).length > 0) {
                       $(marker_id_jquery).css('cursor', 'pointer');
-                      $(marker_id_jquery).bind("click", { 'imap_index': imap_index, 'area_index': area_index }, function () {
+                      $(marker_id_jquery).on("click", { 'imap_index': imap_index, 'area_index': area_index }, function () {
                         let href = _g.a_areas[imap_index][area_index]['area'].attr('href');;
                         if (_g.defaults['debug']) { console.log("[" + imap_index + "] CLICK ON MARKER HREF='" + href + "'"); }
                         window.location.href = href;
