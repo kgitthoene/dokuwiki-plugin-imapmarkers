@@ -6,7 +6,7 @@ if (typeof (variable) === 'undefined') {
 
 globalThis[Symbol.for('imapmarkers_storage')] = (function () {
   var defaults = {
-    'debug': true, // false = no debug on console
+    'debug': false, // false = no debug on console
     'marker_color': "#00AEEF",
     'clicked_reference_css': { 'font-weight': 'bold', 'color': '#00AEEF' }
   };
@@ -60,7 +60,7 @@ globalThis[Symbol.for('imapmarkers_storage')] = (function () {
     const a_ids = s.split(" ");
     if (a_ids.length >= 1) {
       if (a_ids[0].length > 0) {
-        return "#" + String(a_ids[0]).toLowerCase();
+        return String(a_ids[0]);
       }
     }
     return null;
@@ -326,11 +326,18 @@ addEventListener("DOMContentLoaded", (event) => {
           } catch (e) { console.error("EXCEPTION=" + e); }
         });
         // search for references:
-        $(".imapmarkers-location").each(function (index, object) {
+        $(".imapmarkers-location, .wrap_imapmloc").each(function (index, object) {
           try {
-            var loc_id = $(this).attr("location_id");
-            if (loc_id.length > 0) {
-              if (_g.defaults['debug']) { console.log("FOUND IMAPMLOC ID='" + loc_id + "' FONT-WEIGHT=" + $(this).css("font-weight") + " COLOR=" + $(this).css("color")); }
+            var loc_id = null;
+            if ($(this).hasClass("imapmarkers-location")) {
+              loc_id = $(this).attr("location_id");
+              if (_g.defaults['debug']) { console.log("FOUND IMAPMLOC NORMAL ID='" + loc_id + "' FONT-WEIGHT=" + $(this).css("font-weight") + " COLOR=" + $(this).css("color")); }
+            }
+            if ($(this).hasClass("wrap_imapmloc")) {
+              loc_id = _g.get_id_from_string($(this).text());
+              if (_g.defaults['debug']) { console.log("FOUND IMAPMLOC WRAP ID='" + loc_id + "' FONT-WEIGHT=" + $(this).css("font-weight") + " COLOR=" + $(this).css("color")); }
+            }
+            if (loc_id !== null) {
               // find corresponding area
               let ia = _g.find_area_by_jquery_id(loc_id);
               //if (_g.defaults['debug']) { console.log("SEARCH AREA -> '" + JSON.stringify(ia) + "'"); }

@@ -31,7 +31,7 @@ class syntax_plugin_imapmarkers_substitution extends DokuWiki_Syntax_Plugin
   }
   public function getSort()
   {
-    return 404;
+    return 185;
   }
 
   public function connectTo($mode)
@@ -149,7 +149,7 @@ class syntax_plugin_imapmarkers extends DokuWiki_Syntax_Plugin
   /** @inheritDoc */
   public function getSort()
   {
-    return 200;
+    return 185;
   }
 
   public function getAllowedTypes()
