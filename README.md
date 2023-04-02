@@ -71,9 +71,9 @@ Details: [see here](https://www.w3schools.com/html/html_images_imagemap.asp).
 
 All coordinates you enter here are from your original image.
 
-**Configuration**
+### Configuration
 
-A configuration is also inside the map and starts with ```{{cfg>}}``` and ends with ```{{<cfg}}```
+A configuration is inside the map definition and starts with ```{{cfg>}}``` and ends with ```{{<cfg}}```
 
 Between this you define a [JSON](https://www.json.org/json-en.html) object.
 This plugin tests, if it is correct JSON.
@@ -100,6 +100,17 @@ Example: ```"marker-color": "#FDEB00"```
 
 Example: ```"clicked_reference_css": { "font-weight": "bold", "color": "red" }```
 
+Configuration-Example (Place this **inside** the map definition!):
+
+```
+{{cfg>}}
+  {
+    "marker-color": "red",
+    "clicked_reference_css": { "font-weight": "bold", "color": "blue" }
+  }
+{{<cfg}}
+```
+
 ### Create References
 
 References are spans, i.e. a piece of inline text.
@@ -114,6 +125,8 @@ You may define multiple references for one identifier.
 
 ```TEXT``` ist the text shown in the page.
 
+Example: ```{{imapmloc>CON1|Asia}}``` -- Refers to the area with ```CON1``` as identifier.
+
 ## Installation
 
 Download all these files and install them in
@@ -126,7 +139,6 @@ on how to install extensions in DokuWiki.
 ## Used Software and Attribution
 
 This plugin is based on [dokuwiki-plugin-imagemap](https://github.com/i-net-software/dokuwiki-plugin-imagemap/), [ImageMapster](http://www.outsharked.com/imagemapster/) and [PHP Simple HTML DOM Parser](https://sourceforge.net/projects/simplehtmldom/).
-
 
 ## License
 
