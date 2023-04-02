@@ -127,6 +127,7 @@ on how to install extensions in DokuWiki.
 
 This plugin is based on [dokuwiki-plugin-imagemap](https://github.com/i-net-software/dokuwiki-plugin-imagemap/), [ImageMapster](http://www.outsharked.com/imagemapster/) and [PHP Simple HTML DOM Parser](https://sourceforge.net/projects/simplehtmldom/).
 
+
 ## License
 
 [MIT](https://github.com/kgitthoene/dokuwiki-plugin-imapmarkers/blob/master/LICENSE)
