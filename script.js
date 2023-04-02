@@ -170,22 +170,18 @@ addEventListener("DOMContentLoaded", (event) => {
       });
     }  // do_marker_if_resize
 
+    function do_resize() {
+      $('img[usemap]').each(function () {
+        let parent = $(this.offsetParent);
+        let parentparent = $(parent).parent();
+        $(this).mapster('resize', ($(this)[0].naturalWidth < parentparent.width()) ? $(this)[0].naturalWidth : parentparent.width());
+      });
+      do_marker_if_resize();
+    }  // function do_resize
+
     $(window).resize(function () {
       if (_g.resize_timeout != null) { clearTimeout(_g.resize_timeout); }
-      _g.resize_timeout = setTimeout(function () {
-        $('img[usemap]').each(function () {
-          let parent = $(this.offsetParent);
-          let parentparent = $(parent).parent();
-          //if (_g.defaults['debug']) { 
-          //  console.log("PARENTPARENT TAG="+parentparent.prop("tagName")+" ID="+parentparent.attr("id"));
-          //  console.log("PARENT TAG="+parent.prop("tagName")+" ID="+parent.attr("id"));
-          //  console.log("THIS TAG="+$(this).prop("tagName")+" ID="+$(this).attr("id"));
-          //}
-          // limit image width to naturalWidth:
-          $(this).mapster('resize', ($(this)[0].naturalWidth < parentparent.width()) ? $(this)[0].naturalWidth : parentparent.width());
-        });
-        do_marker_if_resize();
-      }, 100);
+      _g.resize_timeout = setTimeout(do_resize, 100);
     });
 
     let imap_do_main_function = function () {
@@ -207,6 +203,8 @@ addEventListener("DOMContentLoaded", (event) => {
         }
       });
       if ((_g.a_imap_div[0] !== undefined) && (_g.a_imap_div[0] !== null)) {
+        // resize image:
+        do_resize();
         // find maps:
         $(".imapmarkers-map").each(function (index, object) {
           let imap_index = _g.get_index_from_string_end($(this).attr("name"));
