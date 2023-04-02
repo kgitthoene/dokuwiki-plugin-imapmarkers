@@ -3,7 +3,7 @@
 This software is a plugin for [DokuWiki](https://www.dokuwiki.org/).
 You can make Image Maps With Markers.
 
-![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
+![Acient World Map with Marker](https://raw.githubusercontent.com/kgitthoene/dokuwiki-plugin-imapmarkers/master/readme/map-with-marker.png)
 
 All documentation for this plugin can be found at
 https://github.com/kgitthoene/dokuwiki-plugin-imapmarkers
