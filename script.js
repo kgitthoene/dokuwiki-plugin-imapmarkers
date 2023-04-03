@@ -152,20 +152,21 @@ addEventListener("DOMContentLoaded", (event) => {
 
     function do_marker_if_resize() {
       _g.a_imap_div.forEach((object, index) => {
-        let marker_id_jquery = "#imap-marker-" + index;
-        if (_g.defaults['debug']) { console.log("RESIZE::[" + index + "] LAST CLICKED ID=" + _g.a_last_clicked_id[index]); }
-        if ((_g.a_last_clicked_id[index] !== undefined) && (_g.a_last_clicked_id[index]['id'] !== undefined) && $(marker_id_jquery).is(":visible")) {
+        if (_g.a_last_clicked_id[index] != undefined) {
+          let marker_id_jquery = "#imapmarkers-marker-" + index;
           let id = _g.a_last_clicked_id[index]['id'];
-          let area_index = _g.a_last_clicked_id[index]['area_index'];
-          if (_g.defaults['debug']) { console.log("RESIZE::[" + index + "] AREA-INDEX=" + area_index); }
-          try {
-            let found_area = _g.a_areas[index][area_index]['area'];
-            let marker_id_jquery = "#imap-marker-" + index;
-            let coords = found_area.attr("coords");
-            let xy = _g.calc_marker_pos(coords);
-            let wh = get_marker_width_and_height(marker_id_jquery);
-            $(marker_id_jquery).css({ top: xy[1] - wh[1] + 3, left: xy[0] - (wh[0] / 2) });
-          } catch (e) { console.error("EXCEPTION=" + e); }
+          if (_g.defaults['debug']) { console.log("RESIZE::[" + index + "] LAST CLICKED ID=" + id); }
+          if ((_g.a_last_clicked_id[index]['id'] !== undefined) && $(marker_id_jquery).is(":visible")) {
+            let area_index = _g.a_last_clicked_id[index]['area_index'];
+            if (_g.defaults['debug']) { console.log("RESIZE::[" + index + "] AREA-INDEX=" + area_index); }
+            try {
+              let found_area = _g.a_areas[index][area_index]['area'];
+              let coords = found_area.attr("coords");
+              let xy = _g.calc_marker_pos(coords);
+              let wh = get_marker_width_and_height(marker_id_jquery);
+              $(marker_id_jquery).css({ top: xy[1] - wh[1] + 3, left: xy[0] - (wh[0] / 2) });
+            } catch (e) { console.error("EXCEPTION=" + e); }
+          }
         }
       });
     }  // do_marker_if_resize
