@@ -142,4 +142,4 @@ This plugin is based on [dokuwiki-plugin-imagemap](https://github.com/i-net-soft
 
 ## License
 
-[MIT](https://github.com/kgitthoene/dokuwiki-plugin-imapmarkers/blob/master/LICENSE)
+[MIT](https://github.com/kgitthoene/dokuwiki-plugin-imapmarkers/blob/master/LICENSE.md)
