@@ -444,8 +444,4 @@ if (window.jQuery) {
       _g.imap_div_timeout = setTimeout(imap_do_main_function, 1000);
     })(jQuery);
   });
-
-  function addBtnActionImagemap(btn, props, edid) {
-    // Not implemented yet
-  }
 }
