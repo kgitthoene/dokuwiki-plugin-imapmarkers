@@ -116,7 +116,7 @@ Example: ```"ff0000"```
 **"area-fillOpacity"**: (float) ```OPACITY-PERCENT``` -- Set the opacity of the hovered area.
 The value must between 0 and 1.
 ```1``` is full opacity.
-```0``` is no opcity, i.e. the hovered area is not shown.
+```0``` is no opacity, i.e. the hovered area is not shown.
 
 Configuration-Example (Place this **inside** the map definition!):
 
