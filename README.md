@@ -3,7 +3,8 @@
 This software is a plugin for [DokuWiki](https://www.dokuwiki.org/).
 You can make image maps with markers and links.
 
-It is inspired by [dokuwiki-plugin-imagemap](https://github.com/i-net-software/dokuwiki-plugin-imagemap/), whose author, Gerry Weißbach, suggested to write an own plugin for my purposes.
+It is inspired by [dokuwiki-plugin-imagemap](https://github.com/i-net-software/dokuwiki-plugin-imagemap/), whose author, Gerry Weißbach, suggested me to write an own plugin for my purposes.
+This plugin is a superset of the *dokuwiki-plugin-imagemap* plugin, simply use no references and empty area-identifiers.
 
 This is a non-interactive sample of such a map:
 ![Acient World Map with Marker](https://raw.githubusercontent.com/kgitthoene/dokuwiki-plugin-imapmarkers/master/readme/map-with-marker.png)
@@ -18,11 +19,15 @@ Sourcecode in DokuWiki:
 [[https://en.wikipedia.org/wiki/Antarctica|CON5|Antarctica @ 152,324,30]]
 [[https://en.wikipedia.org/wiki/Europe|CON6|Europe @ 381,110,30]]
 [[wp>Australia|CON7|Australia @ 510,232,30]]
+[[wp>Australia|Australia II @ 510,232,60]]
+[[|Australia III @ 510,232,90]]
 {{cfg>}}
   {
     "marker" : "internal",
     "marker-color": "red",
-    "clicked_reference_css": { "font-weight": "bold", "color": "red" }
+    "clicked-reference-css": { "font-weight": "bold", "color": "red" }
+    "area-fillColor": "ff0000",
+    "area-fillOpacity": 0.2
   }
 {{<cfg}}
 {{<imapmarkers}}
@@ -48,14 +53,19 @@ You start with ```{{imapmarkers>IMAGE-LINK|TITLE}}``` and end with ```{{<imapmar
 
 Enclosed in this, you define no, one or multiple image areas, [see here](https://www.w3schools.com/html/html_images_imagemap.asp), with this special area definition:
 
-**Area**: ```[[LINK|IDENTIFIER|TITLE@COORDINATES]]```
+**Area with identifier**: ```[[LINK|IDENTIFIER|TITLE@COORDINATES]]```
+
+**Area without identifier**: ```[[LINK|TITLE@COORDINATES]]```
 
 ```LINK``` is an ordinary [DokuWiki-link](https://www.dokuwiki.org/link).
 This may be an external, internal or interwiki link.
 If the area or marker is clicked, this link is opened.
+If the identifier is blank and you click the area, the area is shown until you click it again.
 
 ```IDENTIFIER``` is a page-unique identifier for this area.
 This identifier is later used in a clickable element, say **reference**, to show the marker.
+If the identifier is blank or omited you can't refer to it.
+Identifiers are case sensitive.
 
 ```TITLE``` is the title of the area.
 If you hover over the area, this title is shown.
@@ -96,9 +106,17 @@ Example: ```"marker": "https://upload.wikimedia.org/wikipedia/commons/f/f2/67811
 
 Example: ```"marker-color": "#FDEB00"```
 
-**"clicked_reference_css"**: (JSON) ```JSON-OBJECT-WITH-CSS-DEFINITIONS```  -- The CSS definitions are applied to a reference, if you click the reference.
+**"clicked-reference-css"**: (JSON) ```JSON-OBJECT-WITH-CSS-DEFINITIONS```  -- The CSS definitions are applied to a reference, if you click the reference.
 
-Example: ```"clicked_reference_css": { "font-weight": "bold", "color": "red" }```
+Example: ```"clicked-reference-css": { "font-weight": "bold", "color": "red" }```
+
+**"area-fillColor"**: (string) "HTML-COLOR-HEXADECIMAL" -- Set the color of the hoverd area. Don't use a `#' before the hex-code.
+Example: ```"ff0000"```
+
+**"area-fillOpacity"**: (float) ```OPACITY-PERCENT``` -- Set the opacity of the hovered area.
+The value must between 0 and 1.
+```1``` is full opacity.
+```0``` is no opcity, i.e. the hovered area is not shown.
 
 Configuration-Example (Place this **inside** the map definition!):
 
@@ -106,7 +124,9 @@ Configuration-Example (Place this **inside** the map definition!):
 {{cfg>}}
   {
     "marker-color": "red",
-    "clicked_reference_css": { "font-weight": "bold", "color": "blue" }
+    "clicked-reference-css": { "font-weight": "bold", "color": "red" },
+    "area-fillColor": "ff0000",
+    "area-fillOpacity": 0.2
   }
 {{<cfg}}
 ```

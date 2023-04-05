@@ -2,21 +2,14 @@
 /**
  * DokuWiki Plugin imapmarkers (Syntax Component)
  *
- * @license GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @license MIT https://en.wikipedia.org/wiki/MIT_License
  * @author  Kai Thoene <k.git.thoene@gmx.net>
  */
-class syntax_plugin_imapmarkers_reference extends \dokuwiki\Extension\SyntaxPlugin
-{
-  protected $special_pattern = '\{{2}(?i)IMAPMLOC>.+?\}{2}';  // '<span\b[^>\r\n]*?/>';
-  /*
-  protected $entry_pattern   = '<span\b.*?>(?=.*?</span>)';
-  protected $exit_pattern    = '</span>';
-  */
+class syntax_plugin_imapmarkers_reference extends \dokuwiki\Extension\SyntaxPlugin {
   private bool $is_debug;
 
-  function __construct()
-  {
-    $this->is_debug = true;
+  function __construct() {
+    $this->is_debug = false;
     global $ID;
     if ($this->is_debug) {
       dbglog(sprintf("syntax_plugin_imapmarkers_reference.__construct ID='%s' COMPONENT='%s'", cleanID($ID), $this->getPluginComponent()));
@@ -24,13 +17,22 @@ class syntax_plugin_imapmarkers_reference extends \dokuwiki\Extension\SyntaxPlug
   }
 
   //function getType(){ return 'substition';}
-  function getType(){ return 'formatting';}
-  function getAllowedTypes() { return array('formatting', 'substition', 'disabled'); }
-  function getPType(){ return 'normal';}
-  function getSort(){ return 184; }
+  function getType() {
+    return 'formatting';
+  }
+  function getAllowedTypes() {
+    return array('formatting', 'substition', 'disabled');
+  }
+  function getPType() {
+    return 'normal';
+  }
+  function getSort() {
+    return 184;
+  }
   // override default accepts() method to allow nesting - ie, to get the plugin accepts its own entry syntax
   function accepts($mode) {
-    if ($mode == substr(get_class($this), 7)) return true;
+    if ($mode == substr(get_class($this), 7))
+      return true;
     return parent::accepts($mode);
   }
 
@@ -38,20 +40,13 @@ class syntax_plugin_imapmarkers_reference extends \dokuwiki\Extension\SyntaxPlug
    * Connect pattern to lexer
    */
   function connectTo($mode) {
-    $this->Lexer->addSpecialPattern($this->special_pattern,$mode,'plugin_imapmarkers_'.$this->getPluginComponent());
-    //$this->Lexer->addEntryPattern($this->entry_pattern,$mode,'plugin_imapmarkers_'.$this->getPluginComponent());
-  }
-
-  function postConnect() {
-    //$this->Lexer->addExitPattern($this->exit_pattern, 'plugin_imapmarkers_'.$this->getPluginComponent());
+    $this->Lexer->addSpecialPattern('\{{2}(?i)IMAPMLOC>.+?\}{2}', $mode, 'plugin_imapmarkers_' . $this->getPluginComponent());
   }
 
   /**
    * Handle the match
    */
-  function handle($match, $state, $pos, Doku_Handler $handler){
-    global $conf;
-    global $ID;
+  function handle($match, $state, $pos, Doku_Handler $handler) {
     $args = array($state);
     switch ($state) {
       case DOKU_LEXER_SPECIAL:
@@ -76,7 +71,7 @@ class syntax_plugin_imapmarkers_reference extends \dokuwiki\Extension\SyntaxPlug
           dbglog(sprintf("syntax_plugin_imapmarkers_reference.handle::DOKU_LEXER_SPECIAL: [%d] MATCH='%s'", $this->nr_imagemap_handler, $match));
         }
         break;
-      case DOKU_LEXER_UNMATCHED :
+      case DOKU_LEXER_UNMATCHED:
         $handler->_addCall('cdata', array($match), $pos);
         return false;
     }
@@ -88,10 +83,7 @@ class syntax_plugin_imapmarkers_reference extends \dokuwiki\Extension\SyntaxPlug
    */
   function render($mode, Doku_Renderer $renderer, $data) {
     if ($mode == 'xhtml') {
-      global $conf;
-      global $ID;
       $state = $data[0];
-      //if ($this->is_debug) { dbglog("syntax_plugin_imapmarkers.render: ID='" . cleanID($ID) . "' STATE=" . $state); }
       static $has_content = false;
       switch ($state) {
         case DOKU_LEXER_SPECIAL:
@@ -105,22 +97,16 @@ class syntax_plugin_imapmarkers_reference extends \dokuwiki\Extension\SyntaxPlug
           if ($is_correct) {
             switch ($match_type) {
               case MATCH_IS_LOCATION:
-                $is_correct = true;
                 list($state, $match_type, $is_correct, $err_msg, $loc_id, $loc_title) = $data;
                 $renderer->doc .= sprintf('<span class="imapmarkers imapmarkers-location" location_id="%s">%s</span>', $loc_id, $loc_title);
                 break;
             }
-          }
-          if (!$is_correct) {
+          } else {
             $renderer->doc .= sprintf('  <br /><span style="color:white; background-color:red;">ERROR -- %s</span>%s', $err_msg, DOKU_LF);
           }
-          //if ($this->is_debug) { dbglog(sprintf("DOC='%s'", $renderer->doc)); }
           break;
       }
-      return true;
     }
-    //if ($this->is_debug) { dbglog(sprintf("syntax_plugin_imapmarkers.render| MODE='%s' ID='%s'", $mode, cleanID($ID))); }
     return true;
   } // public function render
 }
-
