@@ -138,13 +138,12 @@ if (window.jQuery) {
     (function ($) {
       var _g = globalThis[Symbol.for('imapmarkers_storage')];
 
-      $('img[usemap].imapmarkers').mapster({
-        fillColor: 'ffffff',
-        fillOpacity: 0.3,
-        wrapClass: true,
-        wrapCss: true,
-        clickNavigate: true
-      });
+      // wait for another ImageMapster:
+      setTimeout(function(){
+        if($("img.mapster_el").length == 0) {
+          $('img[usemap].imapmarkers').mapster(_g.mapster_decoration_obj_default);
+        }
+      }, 1000);
 
       //SEE:https://www.geeksforgeeks.org/how-to-get-all-css-styles-associated-with-an-element-using-jquery/   
       $.fn.cssSpecific = function (str) {
