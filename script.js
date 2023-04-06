@@ -1,5 +1,5 @@
 /**
- * DokuWiki Plugin imapmarkers (Syntax Component)
+ * DokuWiki Plugin imapmarkers (Javascript Component)
  *
  * @license MIT https://en.wikipedia.org/wiki/MIT_License
  * @author  Kai Thoene <k.git.thoene@gmx.net>
@@ -440,7 +440,6 @@ if (window.jQuery) {
           _g.imap_div_timeout = setTimeout(imap_do_main_function, 1000);
         }
       };
-
       _g.imap_div_timeout = setTimeout(imap_do_main_function, 1000);
     })(jQuery);
   });

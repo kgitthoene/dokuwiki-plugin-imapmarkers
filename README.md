@@ -4,7 +4,7 @@ This software is a plugin for [DokuWiki](https://www.dokuwiki.org/).
 You can make image maps with markers and links.
 
 It is inspired by [dokuwiki-plugin-imagemap](https://github.com/i-net-software/dokuwiki-plugin-imagemap/), whose author, Gerry Weißbach, suggested me to write an own plugin for my purposes.
-This plugin is a superset of the *dokuwiki-plugin-imagemap* plugin, simply use no references and empty area-identifiers.
+This plugin is a superset of the *dokuwiki-plugin-imagemap* plugin, simply use no references and omit area-identifiers.
 
 This is a non-interactive sample of such a map:
 ![Acient World Map with Marker](https://raw.githubusercontent.com/kgitthoene/dokuwiki-plugin-imapmarkers/master/readme/map-with-marker.png)
@@ -60,7 +60,7 @@ Enclosed in this, you define no, one or multiple image areas, [see here](https:/
 ```LINK``` is an ordinary [DokuWiki-link](https://www.dokuwiki.org/link).
 This may be an external, internal or interwiki link.
 If the area or marker is clicked, this link is opened.
-If the identifier is blank and you click the area, the area is shown until you click it again.
+If the identifier is blank or omited and you click the area, the area is shown until you click it again.
 
 ```IDENTIFIER``` is a page-unique identifier for this area.
 This identifier is later used in a clickable element, say **reference**, to show the marker.
@@ -100,7 +100,11 @@ Example: ```"marker": "https://upload.wikimedia.org/wikipedia/commons/f/f2/67811
 
 **"marker-width"**: (positive number) -- Set the markers width to this value.
 
+Example: ```"marker-width": 20```
+
 **"marker-height"**: (positive number) -- Set the markers height to this value.
+
+Example: ```"marker-height": 32```
 
 **"marker-color"**: (string) ```"HTML-COLOR"``` -- Set the internal markers color to this value.
 
@@ -111,14 +115,17 @@ Example: ```"marker-color": "#FDEB00"```
 Example: ```"clicked-reference-css": { "font-weight": "bold", "color": "red" }```
 
 **"area-fillColor"**: (string) "HTML-COLOR-HEXADECIMAL" -- Set the color of the hoverd area. Don't use a `#' before the hex-code.
-Example: ```"ff0000"```
+
+Example: ```"area-fillColor": "ff0000"```
 
 **"area-fillOpacity"**: (float) ```OPACITY-PERCENT``` -- Set the opacity of the hovered area.
 The value must between 0 and 1.
 ```1``` is full opacity.
 ```0``` is no opacity, i.e. the hovered area is not shown.
 
-Configuration-Example (Place this **inside** the map definition!):
+Example: ```"area-fillOpacity": 0.3```
+
+Complete Configuration-Example (Place this **inside** your map definition!):
 
 ```
 {{cfg>}}
@@ -134,7 +141,7 @@ Configuration-Example (Place this **inside** the map definition!):
 ### Create References
 
 References are spans, i.e. a piece of inline text.
-And if you click a reference, the marker is shown in the middle of the area with the same **identifier**.
+And if you click a reference, the marker is shown in the middle of the **area** with the same **identifier**.
 
 References can be places everywhere in the page.
 
@@ -143,7 +150,7 @@ References can be places everywhere in the page.
 ```IDENTIFIER``` refers to the **areas** identifier.
 You may define multiple references for one identifier.
 
-```TEXT``` ist the text shown in the page.
+```TEXT``` is the text shown in the page.
 
 Example: ```{{imapmloc>CON1|Asia}}``` -- Refers to the area with ```CON1``` as identifier.
 
