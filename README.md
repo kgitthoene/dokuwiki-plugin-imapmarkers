@@ -6,6 +6,8 @@ You can make image maps with markers and links.
 It is inspired by [dokuwiki-plugin-imagemap](https://github.com/i-net-software/dokuwiki-plugin-imagemap/), whose author, Gerry Weißbach, suggested me to write an own plugin for my purposes.
 This plugin is a superset of the *dokuwiki-plugin-imagemap* plugin, simply use no references and omit area-identifiers.
 
+An interactive example can be found here: [http://insitu.w4f.eu/doku.php?id=imapmarkers:interactive-example](http://insitu.w4f.eu/doku.php?id=imapmarkers:interactive-example)
+
 This is a non-interactive sample of such a map:
 ![Acient World Map with Marker](https://raw.githubusercontent.com/kgitthoene/dokuwiki-plugin-imapmarkers/master/readme/map-with-marker.png)
 
