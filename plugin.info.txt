@@ -4,4 +4,4 @@ email  k.git.thoene@gmx.net
 date   2023-04-03
 name   imapmarkers plugin
 desc   Image Maps With Markers
-url    https://github.com/kgitthoene/imapmarkers
+url    https://github.com/kgitthoene/dokuwiki-plugin-imapmarkers
