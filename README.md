@@ -160,7 +160,7 @@ Example: ```{{imapmloc>CON1|Asia}}``` -- Refers to the area with ```CON1``` as i
 
 Download: [https://github.com/kgitthoene/dokuwiki-plugin-imapmarkers/zipball/master/](https://github.com/kgitthoene/dokuwiki-plugin-imapmarkers/zipball/master/)
 
-Extract the zip file and rename the extracted folder to ```imapmarkes```.
+Extract the zip file and rename the extracted folder to ```imapmarkers```.
 Place this folder in ```DOKUWIKI-SERVER-ROOT/lib/plugins/```
 
 Please refer to http://www.dokuwiki.org/extensions for additional info
