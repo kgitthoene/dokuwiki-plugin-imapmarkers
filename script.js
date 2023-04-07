@@ -5,11 +5,6 @@
  * @author  Kai Thoene <k.git.thoene@gmx.net>
  */
 if (window.jQuery) {
-  if (!jQuery.isFunction(jQuery.fn.mapster)) {
-    // Load jQuery Imagemapster Library. SEE: http://www.outsharked.com/imagemapster/
-    /* DOKUWIKI:include_once jquery.imagemapster.js */
-  }
-
   globalThis[Symbol.for('imapmarkers_storage')] = (function () {
     var defaults = {
       'debug': false, // false = no debug on console
@@ -33,6 +28,7 @@ if (window.jQuery) {
       wrapCss: true,
       clickNavigate: true
     };
+    var is_imagemapster_existing = false;
 
     function append_html_to_jquery_object(html, object) {
       object[0].insertAdjacentHTML(
@@ -106,7 +102,7 @@ if (window.jQuery) {
             }
           }
         }
-      } catch (e) { console.error("EXCEPTION=" + e); }
+      } catch (e) { console.error("plugin:imapmarkers: EXCEPTION=" + e); }
       return [-1, null, -1];
     }  // function find_area_by_jquery_id
 
@@ -124,6 +120,7 @@ if (window.jQuery) {
       imap_div_timeout: imap_div_timeout,
       nr_startup_intervals: nr_startup_intervals,
       mapster_decoration_obj_default: mapster_decoration_obj_default,
+      is_imagemapster_existing: is_imagemapster_existing,
       // exported functions:
       append_html_to_jquery_object: append_html_to_jquery_object,
       calc_marker_pos: calc_marker_pos,
@@ -132,18 +129,23 @@ if (window.jQuery) {
       find_area_by_jquery_id: find_area_by_jquery_id,
     };
   })();
+  var _g = globalThis[Symbol.for('imapmarkers_storage')];
 
+  _g.is_imagemapster_existing = jQuery.isFunction(jQuery.fn.mapster);
+  if (!_g.is_imagemapster_existing) {
+    // Load jQuery Imagemapster Library. SEE: http://www.outsharked.com/imagemapster/
+    /* DOKUWIKI:include_once jquery.imagemapster.js */
+  }
 
   addEventListener("DOMContentLoaded", (event) => {
     (function ($) {
-      var _g = globalThis[Symbol.for('imapmarkers_storage')];
-
-      // wait for another ImageMapster:
-      setTimeout(function(){
-        if($("img.mapster_el").length == 0) {
+      // wait for another ImageMapster or not ...:
+      setTimeout(function () {
+        if ($("img.mapster_el").length == 0) {
+          // initialize ImageMapster
           $('img[usemap].imapmarkers').mapster(_g.mapster_decoration_obj_default);
         }
-      }, 1000);
+      }, ((_g.is_imagemapster_existing) ? 1000 : 0));
 
       //SEE:https://www.geeksforgeeks.org/how-to-get-all-css-styles-associated-with-an-element-using-jquery/   
       $.fn.cssSpecific = function (str) {
@@ -178,7 +180,7 @@ if (window.jQuery) {
                 let xy = _g.calc_marker_pos(coords);
                 let wh = get_marker_width_and_height(marker_id_jquery);
                 $(marker_id_jquery).css({ top: xy[1] - wh[1] + 3, left: xy[0] - (wh[0] / 2) });
-              } catch (e) { console.error("EXCEPTION=" + e); }
+              } catch (e) { console.error("plugin:imapmarkers: EXCEPTION=" + e); }
             }
           }
         });
@@ -280,7 +282,7 @@ if (window.jQuery) {
               }
             } catch (e) {
               let msg = "EXCEPTION=" + e;
-              console.error(msg);
+              console.error("plugin:imapmarkers: " + msg);
               $(this).css("background-color", "#FF0000");
               $(this).append(' <span style="color:white; background-color:red;">' + msg + '</span>');
               $(this).show();
@@ -352,7 +354,7 @@ if (window.jQuery) {
                 _g.a_clicked_css_properties[index] = Object.keys(_g.defaults['clicked-reference-css']).join(", ");
                 if (_g.defaults['debug']) { console.log("[" + index + "] CLICKED CSS PROPERTIES='" + _g.a_clicked_css_properties[index] + "'"); }
               }
-            } catch (e) { console.error("EXCEPTION=" + e); }
+            } catch (e) { console.error("plugin:imapmarkers: EXCEPTION=" + e); }
           });
           // search for references:
           $(".imapmarkers-location, .wrap_imapmloc").each(function (index, object) {
@@ -432,7 +434,7 @@ if (window.jQuery) {
                   $(this).css('cursor', 'pointer');
                 }
               }
-            } catch (e) { console.error("EXCEPTION=" + e); }
+            } catch (e) { console.error("plugin:imapmarkers: EXCEPTION=" + e); }
           });
         } else {
           if (_g.imap_div_timeout !== null) { clearTimeout(_g.imap_div_timeout); }
@@ -442,4 +444,6 @@ if (window.jQuery) {
       _g.imap_div_timeout = setTimeout(imap_do_main_function, 1000);
     })(jQuery);
   });
+} else {
+  console.error("plugin:imapmarkers: jQuery is undefined!");
 }

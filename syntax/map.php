@@ -28,17 +28,19 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
   private array $a_areas;
   private array $a_cfg;
   private bool $is_debug;
+  private string $component;
 
   function __construct() {
     $this->is_debug = false;
     global $ID;
     if ($this->is_debug) {
-      dbglog("syntax_plugin_imapmarkers_map.__construct ID='" . cleanID($ID) . "'");
+      dbglog(sprintf("syntax_plugin_imapmarkers_map.__construct ID='%s' PLUGIN='%s'", cleanID($ID), $this->getPluginName()));
     }
     $this->nr_imagemap_handler = -1;
     $this->nr_imagemap_render = -1;
     $this->a_areas = array();
     $this->a_cfg = array();
+    $this->component = sprintf("plugin_%s_%s", $this->getPluginName(), $this->getPluginComponent());
   }
 
   public function getType() {
@@ -59,9 +61,9 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
    */
   public function connectTo($mode) {
     if ($mode == "base") {
-      $this->Lexer->addEntryPattern('\{{2}(?i)IMAPMARKERS>[^\}]+\}{2}', $mode, 'plugin_imapmarkers_' . $this->getPluginComponent());
-      $this->Lexer->addPattern('\s*\{{2}(?i)CFG>\}\}.*?\{\{<CFG\s*\}{2}\s*', 'plugin_imapmarkers_' . $this->getPluginComponent());
-      $this->Lexer->addPattern('\s*\[{2}.+?\]{2}\s*', 'plugin_imapmarkers_' . $this->getPluginComponent());
+      $this->Lexer->addEntryPattern('\{{2}(?i)IMAPMARKERS>[^\}]+\}{2}', $mode, $this->component);
+      $this->Lexer->addPattern('\s*\{{2}(?i)CFG>\}{2}.*?\{{2}<CFG\s*\}{2}\s*', $this->component);
+      $this->Lexer->addPattern('\s*\[{2}.+?\]{2}\s*', $this->component);
     }
   }
 
@@ -69,7 +71,7 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
    * Connect exit pattern to lexer
    */
   public function postConnect() {
-    $this->Lexer->addExitPattern('\{\{<(?i)IMAPMARKERS\}\}', 'plugin_imapmarkers_' . $this->getPluginComponent());
+    $this->Lexer->addExitPattern('\{{2}<(?i)IMAPMARKERS\}{2}', $this->component);
   }
 
   /**
@@ -89,34 +91,9 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
         if ($this->is_debug) {
           dbglog(sprintf("syntax_plugin_imapmarkers_map.handle::DOKU_LEXER_ENTER: [%d] IMG='%s'", $this->nr_imagemap_handler, $img));
         }
-        if ($img['title']) {
-          $mapname = str_replace(':', '', cleanID($img['title']));
-          $mapname = ltrim($mapname, '0123456789._-');
-        }
-        if (empty($mapname)) {
-          if ($img['type'] == 'internalmedia') {
-            $src = $img['src'];
-            $exists = null;
-            resolve_mediaid(getNS($ID), $src, $exists);
-            $nssep = ($conf['useslash']) ? '[:;/]' : '[:;]';
-            $mapname = preg_replace('!.*' . $nssep . '!', '', $src);
-          } else {
-            $src = parse_url($img['src']);
-            $mapname = str_replace(':', '', cleanID($src['host'] . $src['path'] . $src['query']));
-            $mapname = ltrim($mapname, '0123456789._-');
-          }
-          if (empty($mapname)) {
-            $mapname = sprintf('imapmarkers-%s-%s', cleanID($ID), strval($pos));
-          }
-        }
-        $args = array(
-          $state, $img['type'], $img['src'], $img['title'],
-          $mapname, // TODO: not used. candidate for removal.
-          $img['align'], $img['width'], $img['height'],
-          $img['cache']
-        );
+        $args = array($state, $img['type'], $img['src'], $img['title'], $img['align'], $img['width'], $img['height'], $img['cache']);
         if ($this->is_debug) {
-          dbglog("syntax_plugin_imapmarkers_map.handle::DOKU_LEXER_ENTER: ARGS=[ " . implode(", ", $args) . " ]");
+          dbglog(sprintf("syntax_plugin_imapmarkers_map.handle::DOKU_LEXER_ENTER: ARGS=[ %s ]"), implode(", ", $args));
         }
         break;
       case DOKU_LEXER_MATCHED:
@@ -186,9 +163,10 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
           }
           break;
         } else {
-          if (preg_match("/^\{{2}(?i)CFG>\}\}\s*(.*?)\s*\{\{<CFG\s*\}{2}$/s", $match, $matches)) {
+          if (preg_match("/^\{{2}(?i)CFG>\}{2}\s*(.*?)\s*\{{2}<CFG\s*\}{2}$/s", $match, $matches)) {
             if (count($matches) == 2) {
               $cfg = $matches[1];
+              // test JSON from configuration:
               if (json_decode($cfg)) {
                 $is_correct = true;
                 $args = array($state, MATCH_IS_CONFIG, $is_correct, $err_msg, $cfg);
@@ -218,7 +196,6 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
       global $conf;
       global $ID;
       $state = $data[0];
-      //if ($this->is_debug) { dbglog("syntax_plugin_imapmarkers_map.render: ID='" . cleanID($ID) . "' STATE=" . $state); }
       static $has_content = false;
       switch ($state) {
         case DOKU_LEXER_ENTER:
@@ -226,7 +203,7 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
           if ($this->is_debug) {
             dbglog(sprintf("syntax_plugin_imapmarkers_map.render::DOKU_LEXER_ENTER: [%d] DATA='%s'", $this->nr_imagemap_render, implode($data, ", ")));
           }
-          list($state, $type, $src, $title, $mapname, $align, $width, $height, $cache) = $data;
+          list($state, $type, $src, $title, $align, $width, $height, $cache) = $data;
           if ($type == 'internalmedia') {
             $exists = null;
             resolve_mediaid(getNS($ID), $src, $exists);
@@ -353,4 +330,4 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
     }
     return true;
   } // public function render
-}
+} // class syntax_plugin_imapmarkers_map

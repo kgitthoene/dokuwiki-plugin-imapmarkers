@@ -7,10 +7,12 @@
  */
 class syntax_plugin_imapmarkers_reference extends \dokuwiki\Extension\SyntaxPlugin {
   private bool $is_debug;
+  private string $component;
 
   function __construct() {
     $this->is_debug = false;
     global $ID;
+    $this->component = sprintf("plugin_%s_%s", $this->getPluginName(), $this->getPluginComponent());
     if ($this->is_debug) {
       dbglog(sprintf("syntax_plugin_imapmarkers_reference.__construct ID='%s' COMPONENT='%s'", cleanID($ID), $this->getPluginComponent()));
     }
@@ -40,7 +42,7 @@ class syntax_plugin_imapmarkers_reference extends \dokuwiki\Extension\SyntaxPlug
    * Connect pattern to lexer
    */
   function connectTo($mode) {
-    $this->Lexer->addSpecialPattern('\{{2}(?i)IMAPMLOC>.+?\}{2}', $mode, 'plugin_imapmarkers_' . $this->getPluginComponent());
+    $this->Lexer->addSpecialPattern('\{{2}(?i)IMAPMLOC>.+?\}{2}', $mode, $this->component);
   }
 
   /**
