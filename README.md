@@ -156,14 +156,19 @@ You may define multiple references for one identifier.
 
 Example: ```{{imapmloc>CON1|Asia}}``` -- Refers to the area with ```CON1``` as identifier.
 
-## Manual Installation
+## Installation
+
+Install the plugin using the [Plugin Manager](https://www.dokuwiki.org/plugin:plugin) or the download URL above, which points to latest version of the plugin.
+
+
+### Manual Installation
 
 Download: [https://github.com/kgitthoene/dokuwiki-plugin-imapmarkers/zipball/master/](https://github.com/kgitthoene/dokuwiki-plugin-imapmarkers/zipball/master/)
 
 Extract the zip file and rename the extracted folder to ```imapmarkers```.
 Place this folder in ```DOKUWIKI-SERVER-ROOT/lib/plugins/```
 
-Please refer to http://www.dokuwiki.org/extensions for additional info
+Please refer to [http://www.dokuwiki.org/extensions](http://www.dokuwiki.org/extensions) for additional info
 on how to install extensions in DokuWiki.
 
 ## Used Software and Attribution
