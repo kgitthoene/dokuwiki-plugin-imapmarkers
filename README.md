@@ -158,7 +158,7 @@ Example: ```{{imapmloc>CON1|Asia}}``` -- Refers to the area with ```CON1``` as i
 
 ## Installation
 
-Install the plugin using the [Plugin Manager](https://www.dokuwiki.org/plugin:plugin) or the download URL above, which points to latest version of the plugin.
+Install the plugin using the [Plugin Manager](https://www.dokuwiki.org/plugin:extension) or the download URL above, which points to latest version of the plugin.
 
 
 ### Manual Installation
