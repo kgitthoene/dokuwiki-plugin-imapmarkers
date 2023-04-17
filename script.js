@@ -139,14 +139,6 @@ if (window.jQuery) {
 
   addEventListener("DOMContentLoaded", (event) => {
     (function ($) {
-      // wait for another ImageMapster or not ...:
-      setTimeout(function () {
-        if ($("img.mapster_el").length == 0) {
-          // initialize ImageMapster
-          $('img[usemap].imapmarkers').mapster(_g.mapster_decoration_obj_default);
-        }
-      }, ((_g.is_imagemapster_existing) ? 1000 : 0));
-
       //SEE:https://www.geeksforgeeks.org/how-to-get-all-css-styles-associated-with-an-element-using-jquery/   
       $.fn.cssSpecific = function (str) {
         var ob = {};
@@ -203,12 +195,24 @@ if (window.jQuery) {
       let imap_do_main_function = function () {
         if (_g.defaults['debug']) { console.log("imapmarkers::START IMAGEMAPPING MARKER"); }
         _g.nr_startup_intervals++;
-        if (_g.nr_startup_intervals >= 5) {
+        if (_g.nr_startup_intervals >= 10) {
           // stop after 5 s searching:
           if (_g.imap_div_timeout !== null) { clearTimeout(_g.imap_div_timeout); }
           if (_g.defaults['debug']) { console.log("imapmarkers::GIVE UP IMAGEMAPPING SEARCH"); }
           return;
         }
+        //
+        // wait for another ImageMapster or not ...:
+        //setTimeout(function () {
+          if ($("img.mapster_el").length == 0) {
+            // initialize ImageMapster
+            $('img[usemap].imapmarkers').mapster(_g.mapster_decoration_obj_default);
+            if (_g.defaults['debug']) { console.log("NOT FOUND: img.mapster_el => INIT"); }
+          }  else {
+            if (_g.defaults['debug']) { console.log("FOUND: img.mapster_el"); }
+          }
+        //}, ((_g.is_imagemapster_existing) ? 1000 : 0)); // 1000 : 0
+        //
         // find container:
         var imap_index = 0;
         $(".imapmarkers-container").each(function (index, object) {
@@ -218,7 +222,7 @@ if (window.jQuery) {
             _g.a_imap_div[imap_index] = $(this);
           }
         });
-        if ((_g.a_imap_div[0] !== undefined) && (_g.a_imap_div[0] !== null)) {
+        if ((_g.a_imap_div[0] !== undefined) && (_g.a_imap_div[0] !== null) && ($("img.mapster_el").length != 0)) {
           // resize image:
           do_resize();
           // find maps:
@@ -438,10 +442,10 @@ if (window.jQuery) {
           });
         } else {
           if (_g.imap_div_timeout !== null) { clearTimeout(_g.imap_div_timeout); }
-          _g.imap_div_timeout = setTimeout(imap_do_main_function, 1000);
+          _g.imap_div_timeout = setTimeout(imap_do_main_function, 500);
         }
       };
-      _g.imap_div_timeout = setTimeout(imap_do_main_function, 1000);
+      _g.imap_div_timeout = setTimeout(imap_do_main_function, 100);
     })(jQuery);
   });
 } else {
