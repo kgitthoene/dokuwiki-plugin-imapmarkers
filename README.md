@@ -9,20 +9,18 @@ This plugin is a superset of the *dokuwiki-plugin-imagemap* plugin, simply use n
 __*An interactive example can be found here*__: [http://insitu.w4f.eu/doku.php?id=imapmarkers:interactive-example](http://insitu.w4f.eu/doku.php?id=imapmarkers:interactive-example)
 
 This is a non-interactive sample of such a map:
-![Acient World Map with Marker](https://raw.githubusercontent.com/kgitthoene/dokuwiki-plugin-imapmarkers/master/readme/map-with-marker.png)
+![Acient World Map with Marker](readme/map-with-marker.png)
 
 Sourcecode in DokuWiki:
 ```
-{{imapmarkers>imapmarkers:1744_bowen_map_of_the_world.jpg|Bowen Map of the World, 1744}}
-[[https://en.wikipedia.org/wiki/Asia|CON1|Asia @ 456,116,30]]
-[[https://en.wikipedia.org/wiki/Africa|CON2|Africa @ 358,167,30]]
-[[https://en.wikipedia.org/wiki/North_America|CON3|North America @ 166,134,30]]
-[[https://en.wikipedia.org/wiki/South_America|CON4|South America @ 222,210,30]]
-[[https://en.wikipedia.org/wiki/Antarctica|CON5|Antarctica @ 152,324,30]]
-[[https://en.wikipedia.org/wiki/Europe|CON6|Europe @ 381,110,30]]
-[[wp>Australia|CON7|Australia @ 510,232,30]]
-[[wp>Australia|Australia II @ 510,232,60]]
-[[|Australia III @ 510,232,90]]
+{{imapmarkers>https://upload.wikimedia.org/wikipedia/commons/f/fd/1744_Bowen_Map_of_the_World_in_Hemispheres_-_Geographicus_-_World-bowen-1744.jpg|Bowen Map of the World, 1744}}
+[[https://en.wikipedia.org/wiki/Asia|CON1|Asia @ 2775,804,30]]
+[[https://en.wikipedia.org/wiki/Africa|CON2|Africa @ 2145,966,30]]
+[[https://en.wikipedia.org/wiki/North_America|CON3|North America @ 1005,846,30]]
+[[https://en.wikipedia.org/wiki/South_America|CON4|South America @ 1368,1290,30]]
+[[https://en.wikipedia.org/wiki/Antarctica|CON5|Antarctica @ 947,2031,30]]
+[[https://en.wikipedia.org/wiki/Europe|CON6|Europe @ 2370,669,30]]
+[[wp>Australia|CON7|Australia @ 3138,1404,30]]
 {{cfg>}}
   {
     "marker" : "internal",
