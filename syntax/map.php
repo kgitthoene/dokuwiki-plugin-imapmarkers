@@ -159,7 +159,7 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
             if ($this->is_debug) {
               dbglog(sprintf("syntax_plugin_imapmarkers_map.handle::DOKU_LEXER_MATCHED: URL='%s' CLASS='%s'", $uri, $classes));
             }
-            $args = array($state, MATCH_IS_AREA, $is_correct, $err_msg, $link, $loc_id, $text, $a_coords, $uri, $classes);
+            $args = array($state, self::MATCH_IS_AREA, $is_correct, $err_msg, $link, $loc_id, $text, $a_coords, $uri, $classes);
           }
           break;
         } else {
@@ -169,7 +169,7 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
               // test JSON from configuration:
               if (json_decode($cfg)) {
                 $is_correct = true;
-                $args = array($state, MATCH_IS_CONFIG, $is_correct, $err_msg, $cfg);
+                $args = array($state, self::MATCH_IS_CONFIG, $is_correct, $err_msg, $cfg);
                 break;
               } else {
                 $err_msg = sprintf("Invalid JSON in configuration! JSON='%s'", $cfg);
@@ -182,7 +182,7 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
             $err_msg = sprintf("Invalid expression! EXPRESSION='%s'", $match);
           }
         }
-        $args = array($state, MATCH_IS_UNKNOWN, $is_correct, $err_msg);
+        $args = array($state, self::MATCH_IS_UNKNOWN, $is_correct, $err_msg);
         break;
     }
     return $args;
@@ -227,19 +227,19 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
           $renderer->doc .= sprintf('</p>%s', DOKU_LF);
           break;
         case DOKU_LEXER_MATCHED:
-          $match_type = MATCH_IS_UNKNOWN;
+          $match_type = self::MATCH_IS_UNKNOWN;
           $is_correct = false;
           $err_msg = "";
           list($state, $match_type, $is_correct, $err_msg) = $data;
           if ($is_correct) {
             switch ($match_type) {
-              case MATCH_IS_AREA:
+              case self::MATCH_IS_AREA:
                 if (!array_key_exists($this->nr_imagemap_render, $this->a_areas)) {
                   $this->a_areas[$this->nr_imagemap_render] = array();
                 }
                 array_push($this->a_areas[$this->nr_imagemap_render], $data);
                 break;
-              case MATCH_IS_CONFIG:
+              case self::MATCH_IS_CONFIG:
                 if (!array_key_exists($this->nr_imagemap_render, $this->a_cfg)) {
                   $this->a_cfg[$this->nr_imagemap_render] = array();
                 }

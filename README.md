@@ -27,7 +27,7 @@ Sourcecode in DokuWiki:
   {
     "marker" : "internal",
     "marker-color": "red",
-    "clicked-reference-css": { "font-weight": "bold", "color": "red" }
+    "clicked-reference-css": { "font-weight": "bold", "color": "red" },
     "area-fillColor": "ff0000",
     "area-fillOpacity": 0.2
   }

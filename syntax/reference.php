@@ -6,6 +6,11 @@
  * @author  Kai Thoene <k.git.thoene@gmx.net>
  */
 class syntax_plugin_imapmarkers_reference extends \dokuwiki\Extension\SyntaxPlugin {
+  private const MATCH_IS_UNKNOWN = 0;
+  private const MATCH_IS_AREA = 1;
+  private const MATCH_IS_CONFIG = 2;
+  private const MATCH_IS_LOCATION = 3;
+
   private bool $is_debug;
   private string $component;
 
@@ -64,10 +69,10 @@ class syntax_plugin_imapmarkers_reference extends \dokuwiki\Extension\SyntaxPlug
           $loc_id = $matches[1];
           $loc_title = $matches[2];
           $is_correct = true;
-          $args = array($state, MATCH_IS_LOCATION, $is_correct, $err_msg, $loc_id, $loc_title);
+          $args = array($state, self::MATCH_IS_LOCATION, $is_correct, $err_msg, $loc_id, $loc_title);
         } else {
           $err_msg = sprintf("Malformed location! LOCATION='%s'", $match);
-          $args = array($state, MATCH_IS_UNKNOWN, $is_correct, $err_msg);
+          $args = array($state, self::MATCH_IS_UNKNOWN, $is_correct, $err_msg);
         }
         if ($this->is_debug) {
           dbglog(sprintf("syntax_plugin_imapmarkers_reference.handle::DOKU_LEXER_SPECIAL: [%d] MATCH='%s'", $this->nr_imagemap_handler, $match));
@@ -92,13 +97,13 @@ class syntax_plugin_imapmarkers_reference extends \dokuwiki\Extension\SyntaxPlug
           if ($this->is_debug) {
             dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_SPECIAL: [%d] DATA='%s'", $this->nr_imagemap_render, implode($data, ", ")));
           }
-          $match_type = MATCH_IS_UNKNOWN;
+          $match_type = self::MATCH_IS_UNKNOWN;
           $is_correct = false;
           $err_msg = "";
           list($state, $match_type, $is_correct, $err_msg) = $data;
           if ($is_correct) {
             switch ($match_type) {
-              case MATCH_IS_LOCATION:
+              case self::MATCH_IS_LOCATION:
                 list($state, $match_type, $is_correct, $err_msg, $loc_id, $loc_title) = $data;
                 $renderer->doc .= sprintf('<span class="imapmarkers imapmarkers-location" location_id="%s">%s</span>', $loc_id, $loc_title);
                 break;
