@@ -151,7 +151,7 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
               // analyse link.
               $dokuwiki_link = sprintf("[[%s|%s]]", $link, $text);
               $rendered_result = $this->render_text($dokuwiki_link);
-              $dom = imapmarkers_str_get_html($rendered_result);
+              $dom = imapmarkers\str_get_html($rendered_result);
               $a = $dom->find('a', 0);
               $uri = $a->href;
               $classes = $a->class;
