@@ -128,11 +128,12 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
               $err_msg = sprintf("Invalid area! AREA='%s'", $match);
           }
           if ($is_match_ok) {
-            $a_coords = explode(",", $coordinates);
+            $a_coords = explode(",", trim(strval($coordinates)));
             foreach ($a_coords as $key => $value) {
-              $a_coords[$key] = intval(trim($value));
+              $a_coords[$key] = intval(trim(strval($value)));
             }
-            switch (count($a_coords)) {
+            $num_coords = count($a_coords);
+            switch ($num_coords) {
               case 3:
               case 4:
               case 6:
@@ -145,6 +146,8 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
                 }
                 $err_msg = sprintf("Invalid number of coordinates! COUNT=%d", count($a_coords));
             }
+            $a_coords_s = $is_correct ? implode(",", $a_coords) : "0,0,0,0,0,0";
+            $num_coords = $is_correct ? $num_coords : 6;
             $uri = $link;
             $classes = "";
             if ($link != "") {
@@ -159,7 +162,7 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
             if ($this->is_debug) {
               dbglog(sprintf("syntax_plugin_imapmarkers_map.handle::DOKU_LEXER_MATCHED: URL='%s' CLASS='%s'", $uri, $classes));
             }
-            $args = array($state, self::MATCH_IS_AREA, $is_correct, $err_msg, $link, $loc_id, $text, $a_coords, $uri, $classes);
+            $args = array($state, self::MATCH_IS_AREA, $is_correct, $err_msg, $link, $loc_id, $text, $num_coords, $a_coords_s, $uri, $classes);
           }
           break;
         } else {
@@ -201,7 +204,7 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
         case DOKU_LEXER_ENTER:
           $this->nr_imagemap_render++;
           if ($this->is_debug) {
-            dbglog(sprintf("syntax_plugin_imapmarkers_map.render::DOKU_LEXER_ENTER: [%d] DATA='%s'", $this->nr_imagemap_render, implode($data, ", ")));
+            dbglog(sprintf("syntax_plugin_imapmarkers_map.render::DOKU_LEXER_ENTER: [%d] DATA='%s'", $this->nr_imagemap_render, implode(", ", $data)));
           }
           list($state, $type, $src, $title, $align, $width, $height, $cache) = $data;
           if ($type == 'internalmedia') {
@@ -247,7 +250,7 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
                 break;
             }
             if ($this->is_debug) {
-              dbglog(sprintf("syntax_plugin_imapmarkers_map.render::DOKU_LEXER_MATCHED: [%d] DATA='%s'", $this->nr_imagemap_render, implode($data, ", ")));
+              dbglog(sprintf("syntax_plugin_imapmarkers_map.render::DOKU_LEXER_MATCHED: [%d] DATA='%s'", $this->nr_imagemap_render, implode(", ", $data)));
             }
           } else {
             $renderer->doc .= sprintf('  <br /><span style="color:white; background-color:red;">ERROR -- %s</span>%s', $err_msg, DOKU_LF);
@@ -255,7 +258,7 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
           break;
         case DOKU_LEXER_UNMATCHED:
           if ($this->is_debug) {
-            dbglog(sprintf("syntax_plugin_imapmarkers_map.render::DOKU_LEXER_UNMATCHED: [%d] DATA='%s'", $this->nr_imagemap_render, implode($data, ", ")));
+            dbglog(sprintf("syntax_plugin_imapmarkers_map.render::DOKU_LEXER_UNMATCHED: [%d] DATA='%s'", $this->nr_imagemap_render, implode(", ", $data)));
           }
           break;
         case DOKU_LEXER_EXIT:
@@ -270,7 +273,7 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
             $nr_cfgs = 1;
           }
           if ($this->is_debug) {
-            dbglog(sprintf("syntax_plugin_imapmarkers_map.render::DOKU_LEXER_EXIT: [%d] DATA='%s' #AREAS=%d #CFGS=%d", $this->nr_imagemap_render, implode($data, ", "), $nr_areas, $nr_cfgs));
+            dbglog(sprintf("syntax_plugin_imapmarkers_map.render::DOKU_LEXER_EXIT: [%d] DATA='%s' #AREAS=%d #CFGS=%d", $this->nr_imagemap_render, implode(", ", $data), $nr_areas, $nr_cfgs));
           }
           if ($nr_areas > 0) {
             foreach ($this->a_areas[$this->nr_imagemap_render] as $value) {
@@ -283,10 +286,10 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
             if ($is_all_ok) {
               $renderer->doc .= sprintf('  <map name="imapmarkers-map-%d" class="imapmarkers imapmarkers-map">%s', $this->nr_imagemap_render, DOKU_LF);
               foreach ($this->a_areas[$this->nr_imagemap_render] as $key => $value) {
-                list($state, $match_type, $is_correct, $err_msg, $link, $loc_id, $text, $a_coords, $uri, $classes) = $value;
+                list($state, $match_type, $is_correct, $err_msg, $link, $loc_id, $text, $num_coords, $a_coords_s, $uri, $classes) = $value;
                 $link = ($link == "") ? "#" : $link;
                 $shape = "";
-                switch (count($a_coords)) {
+                switch ($num_coords) {
                   case 3:
                     $shape = "circle";
                     break;
@@ -296,7 +299,7 @@ class syntax_plugin_imapmarkers_map extends \dokuwiki\Extension\SyntaxPlugin {
                   default:
                     $shape = "poly";
                 }
-                $renderer->doc .= sprintf('    <area id="imapmarkers-area-%d-%d" location_id="%s" class="imapmarkers" shape="%s" coords="%s" alt="%s" title="%s" href="%s" />%s', $this->nr_imagemap_render, $key, $loc_id, $shape, implode($a_coords, ","), $text, $text, $uri, DOKU_LF);
+                $renderer->doc .= sprintf('    <area id="imapmarkers-area-%d-%d" location_id="%s" class="imapmarkers" shape="%s" coords="%s" alt="%s" title="%s" href="%s" />%s', $this->nr_imagemap_render, $key, $loc_id, $shape, $a_coords_s, $text, $text, $uri, DOKU_LF);
               }
               $renderer->doc .= sprintf('    <div style="display:none;" class="imapcontent">%s', DOKU_LF);
               $renderer->doc .= sprintf('      <p>%s', DOKU_LF);

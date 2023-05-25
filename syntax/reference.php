@@ -95,7 +95,7 @@ class syntax_plugin_imapmarkers_reference extends \dokuwiki\Extension\SyntaxPlug
       switch ($state) {
         case DOKU_LEXER_SPECIAL:
           if ($this->is_debug) {
-            dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_SPECIAL: [%d] DATA='%s'", $this->nr_imagemap_render, implode($data, ", ")));
+            dbglog(sprintf("syntax_plugin_imapmarkers.render::DOKU_LEXER_SPECIAL: [%d] DATA='%s'", $this->nr_imagemap_render, implode(", ", $data)));
           }
           $match_type = self::MATCH_IS_UNKNOWN;
           $is_correct = false;
